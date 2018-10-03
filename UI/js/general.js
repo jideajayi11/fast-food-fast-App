@@ -21,3 +21,17 @@ function requestFetch(uri, methodF, bodyF = {}) {
 		body: JSON.stringify(bodyF),
 	});
 }
+
+const getClass = document.getElementById('allBTN');
+const len = getClass.item;
+
+	getClass.addEventListener('click', (event) => {
+		alert(event.target.id);
+	});
+
+
+class ProcessCollection {
+	constructor(id) {
+		this.id = id;
+	}
+}
