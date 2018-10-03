@@ -1,6 +1,5 @@
 function requestFetch(uri, methodF, bodyF = {}) {
-  //const baseURL = 'https://fast-food-fast-delivery.herokuapp.com/';
-  const baseURL = 'http://localhost:3000';
+  const baseURL = 'https://fast-food-fast-delivery.herokuapp.com';
 
   if (methodF == 'GET' || methodF == 'DELETE') {
     return request = new Request(baseURL + uri, {
@@ -8,6 +7,7 @@ function requestFetch(uri, methodF, bodyF = {}) {
       headers: new Headers({
         'Content-Type': 'application/json',
         'x-access-token': localStorage.getItem('fastFoodToken'),
+				mode: 'cors'
       }),
     });
   }
