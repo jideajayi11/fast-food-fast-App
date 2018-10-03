@@ -1,15 +1,11 @@
-const signupForm = document.forms['signupForm'];
-signupForm.addEventListener('submit', (event) => {
+const signinForm = document.forms['signinForm'];
+signinForm.addEventListener('submit', (event) => {
 	event.preventDefault();
-	const uri = '/api/v1/auth/signup';
+	const uri = '/api/v1/auth/login';
   const methodF = 'POST';
   const bodyF = {
-    fullName: signupForm.fullName.value,
-		phoneNumber: signupForm.phoneNumber.value,
-		deliveryAddress: signupForm.address.value,
-		email: signupForm.email.value,
-		password: signupForm.password.value,
-		confirmPassword: signupForm.cPassword.value
+		email: signinForm.email.value,
+		password: signinForm.password.value
   };
 	fetch(requestFetch(uri, methodF, bodyF))
 	.then(resp => resp.json())
