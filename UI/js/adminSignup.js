@@ -1,23 +1,22 @@
-const signupForm = document.forms['signupForm'];
+const signupFormAdmin = document.forms['signupFormAdmin'];
 
-signupForm.addEventListener('submit', (event) => {
+signupFormAdmin.addEventListener('submit', (event) => {
 	event.preventDefault();
-	const uri = '/api/v1/auth/signup';
+	const uri = '/api/v1/admin/signup';
   const methodF = 'POST';
   const bodyF = {
-    fullName: signupForm.fullName.value,
-		phoneNumber: signupForm.phoneNumber.value,
-		deliveryAddress: signupForm.address.value,
-		email: signupForm.email.value,
-		password: signupForm.password.value,
-		confirmPassword: signupForm.cPassword.value
+    restaurant: signupFormAdmin.restaurant.value,
+		phoneNumber: signupFormAdmin.phoneNumber.value,
+		email: signupFormAdmin.email.value,
+		password: signupFormAdmin.password.value,
+		confirmPassword: signupFormAdmin.cPassword.value
   };
 	fetch(requestFetch(uri, methodF, bodyF))
 	.then(resp => resp.json())
 	.then((data) => {
 		console.log(data);
 		if(data.status === 'success') {
-			window.location.href = 'viewFood.html';
+			window.location.href = 'adminOrder.html';
 			localStorage.setItem('fastFoodToken', data.token);
 			localStorage.setItem('userName', data.data.fullName);
 		} else {
@@ -29,4 +28,5 @@ signupForm.addEventListener('submit', (event) => {
 		document.querySelector('#errorMessage').innerHTML = `
 			Something is not right. Try checking your connection.`;
 	});
+
 });
