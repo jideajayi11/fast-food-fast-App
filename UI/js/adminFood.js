@@ -43,30 +43,24 @@ const tableId = document.getElementById('tableId');
 fetch(requestFetch(uri, methodF))
 .then(resp => resp.json())
 .then((data) => {
-	if(data.orders[0]) {
+	if(data.menus[0]) {
 		tableId.innerHTML = `
                 <tr>
-                  <th>Customer</th>
-                  <th>Phone Number</th>
-                  <th>Delivery Address</th>
+                  <th>Food Item</th>
                   <th>Description</th>
                   <th>Price</th>
-                  <th>Quantity</th>
-                  <th>Amount</th>
-                  <th>Status</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
                 </tr>`;
-		data.orders.forEach((item) => {
+		data.menus.forEach((item) => {
 			tableId.innerHTML = `
 				${tableId.innerHTML}
 						<tr>
-							<td>${item.fullname}</td>
-							<td>${item.phonenumber}</td>
-							<td>${item.deliveryAddress}</td>
+							<td><img src="${item.imageurl}"></td>
 							<td>${item.foodname}</td>
 							<td>${item.price}</td>
-							<td>${item.quantity}</td>
-							<td>${item.price * item.quantity}</td>
-							<td><button id="order_${item.id}" title="click to update order">${item.orderstatus}</button></td>
+							<td><button id="edit_${item.id}" title="click to edit">Edit</button></td>
+							<td><button id="delete_${item.id}" class="red" title="click to delete">Delete</button></td>
 						</tr>`;
 		});
 	} else {
@@ -81,8 +75,6 @@ fetch(requestFetch(uri, methodF))
 													</td></tr>
 											</table>`;
 });
-
-
 
 
 tableId.addEventListener('click', (event) => {
@@ -119,4 +111,24 @@ tableId.addEventListener('click', (event) => {
 			}
 		});
 	}
+});
+
+
+const addBtn = document.getElementById('addBtn');
+addBtn.addEventListener('click', (event) => {
+	const modal = document.querySelector('.overlay');
+	modal.style.display = 'flex';
+	
+	const addFoodForm = document.forms['addFoodForm'];
+	
+	const xBtn1 = document.getElementById('xBtn1');
+	xBtn1.addEventListener('click', (event1) => {
+		addFoodForm.reset();
+		modal.style.display = 'none';
+	});
+	
+	addFoodForm.addEventListener('submit', (event2) => {
+		
+	});
+	
 });
