@@ -31,7 +31,7 @@ grandChild.innerHTML = `Restaurants:`;
 child.appendChild(grandChild);
 grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'top-text');
-const username = localStorage.getItem('userName');
+const username = jwt_decode(localStorage.getItem('fastFoodToken')).fullName;
 grandChild.innerHTML = `<span class="text-theme">User: </span> 
 													<strong>${username}</strong>`;
 child.appendChild(grandChild);
