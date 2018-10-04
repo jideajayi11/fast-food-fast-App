@@ -1,3 +1,7 @@
+const userId = jwt_decode(localStorage.getItem('fastFoodToken')).userId;
+let username;
+if(userId)
+	username = jwt_decode(localStorage.getItem('fastFoodToken')).fullName;
 let uri = '/api/v1/admin';
 let methodF = 'GET';
 const restaurantDetails = document.createElement('select');
@@ -31,7 +35,6 @@ grandChild.innerHTML = `Restaurants:`;
 child.appendChild(grandChild);
 grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'top-text');
-const username = jwt_decode(localStorage.getItem('fastFoodToken')).fullName;
 grandChild.innerHTML = `<span class="text-theme">User: </span> 
 													<strong>${username}</strong>`;
 child.appendChild(grandChild);

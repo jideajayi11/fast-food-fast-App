@@ -1,8 +1,8 @@
-const userId = jwt_decode(localStorage.getItem('fastFoodToken')).userId;
+const adminId = jwt_decode(localStorage.getItem('fastFoodToken')).adminId;
 let username;
-if(userId)
+if(adminId)
 	username = jwt_decode(localStorage.getItem('fastFoodToken')).fullName;
-let uri = `/api/v1/users/${userId}/orders`;
+let uri = `/api/v1/orders`;
 let methodF = 'GET';
 
 
@@ -16,11 +16,11 @@ let grandChild = document.createElement('span');
 child.appendChild(grandChild);
 grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'pageTitle');
-grandChild.innerHTML = `My Orders:`;
+grandChild.innerHTML = `Manage Orders:`;
 child.appendChild(grandChild);
 grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'top-text');
-grandChild.innerHTML = `<span class="text-theme">User: </span> 
+grandChild.innerHTML = `<span class="text-theme">Admin: </span> 
 													<strong>${username}</strong>`;
 child.appendChild(grandChild);
 pageBody.appendChild(child);
@@ -28,7 +28,7 @@ child = document.createElement('div');
 child.setAttribute('class', 'table-responsive');
 child.innerHTML = `<table class="mt-20" id="tableId">
 											<tr><td class="preload">
-												Order History...
+												Your Orders...
 											</td></tr>
 										</table>`;
 pageBody.appendChild(child);
@@ -42,8 +42,10 @@ fetch(requestFetch(uri, methodF))
 .then((data) => {
 	if(data.orders[0]) {
 		tableId.innerHTML = `
-								<tr>
-                  <th>Restaurant</th>
+                <tr>
+                  <th>Customer</th>
+                  <th>Phone Number</th>
+                  <th>Delivery Address</th>
                   <th>Description</th>
                   <th>Price</th>
                   <th>Quantity</th>
@@ -51,39 +53,28 @@ fetch(requestFetch(uri, methodF))
                   <th>Status</th>
                 </tr>`;
 		data.orders.forEach((item) => {
-			if(item.orderstatus === 'New') {
-				tableId.innerHTML = `
-					${tableId.innerHTML}
-							<tr>
-								<td>${item.restaurantname}</td>
-								<td>${item.foodname}</td>
-								<td>${item.price}</td>
-								<td>${item.quantity}</td>
-								<td>${item.price * item.quantity}</td>
-								<td><button id="order_${item.id}" title="click to cancel order">${item.orderstatus}</button></td>
-							</tr>`;
-			} else {
-				tableId.innerHTML = `
-					${tableId.innerHTML}
-							<tr>
-								<td>${item.restaurantname}</td>
-								<td>${item.foodname}</td>
-								<td>${item.price}</td>
-								<td>${item.quantity}</td>
-								<td>${item.price * item.quantity}</td>
-								<td>${item.orderstatus}</td>
-							</tr>`;
-			}
+			tableId.innerHTML = `
+				${tableId.innerHTML}
+						<tr>
+							<td>${item.fullname}</td>
+							<td>${item.phonenumber}</td>
+							<td>${item.deliveryaddress}</td>
+							<td>${item.foodname}</td>
+							<td>${item.price}</td>
+							<td>${item.quantity}</td>
+							<td>${item.price * item.quantity}</td>
+							<td><button id="order_${item.id}" title="click to update order">${item.orderstatus}</button></td>
+						</tr>`;
 		});
 	} else {
 		tableId.innerHTML = `
-							<tr><td class="preload">No order history was found.</td></tr>`;
+							<tr><td class="preload">You have no order.</td></tr>`;
 	}
 })
 .catch((error) => {
 	tableId.innerHTML = `<table class="mt-20" id="tableId">
 													<tr><td class="preload">
-														Order History...
+														Your Orders...
 													</td></tr>
 											</table>`;
 });
@@ -98,23 +89,31 @@ tableId.addEventListener('click', (event) => {
 		modal.style.display = 'flex';
 		const modalYes = document.getElementById('yesBtn');
 		const modalNo = document.getElementById('noBtn');
+		const getStatus = document.getElementById('getStatus');
 		modalNo.addEventListener('click', (event1) => {
+			getStatus.value = '';
 			modal.style.display = 'none';
 		});
 		modalYes.addEventListener('click', (event2) => {
-			uri = `/api/v1/cancel/${id}`;
-			methodF = 'PUT';
-			bodyF = {};
-			
-			fetch(requestFetch(uri, methodF, bodyF))
-			.then(resp => resp.json())
-			.then((data) => {
-				window.location.href = 'viewOrder.html';
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-			modal.style.display = 'none';
+			const value = getStatus.value;
+			if(value !== '') {
+				uri = `/api/v1/orders/${id}`;
+				methodF = 'PUT';
+				bodyF = {
+					orderStatus: value
+				};
+
+				fetch(requestFetch(uri, methodF, bodyF))
+				.then(resp => resp.json())
+				.then((data) => {
+					window.location.href = 'adminOrder.html';
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+				getStatus.value = '';
+				modal.style.display = 'none';
+			}
 		});
 	}
 });
