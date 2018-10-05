@@ -1,7 +1,9 @@
 const userId = jwt_decode(localStorage.getItem('fastFoodToken')).userId;
-const username = jwt_decode(localStorage.getItem('fastFoodToken')).fullName;
-let uri = `/api/v1/users/${userId}/orders`;
-let methodF = 'GET';
+let username;
+if(userId)
+	username = jwt_decode(localStorage.getItem('fastFoodToken')).fullName;
+let fetchUrl = `/api/v1/users/${userId}/orders`;
+let fetchMethod = 'GET';
 
 
 const pageBody = document.getElementById('pageBody');
@@ -31,11 +33,9 @@ child.innerHTML = `<table class="mt-20" id="tableId">
 										</table>`;
 pageBody.appendChild(child);
 
-
-
 const tableId = document.getElementById('tableId');
 	
-fetch(requestFetch(uri, methodF))
+fetch(requestFetch(fetchUrl, fetchMethod))
 .then(resp => resp.json())
 .then((data) => {
 	if(data.orders[0]) {
@@ -53,8 +53,8 @@ fetch(requestFetch(uri, methodF))
 				tableId.innerHTML = `
 					${tableId.innerHTML}
 							<tr>
-								<td>${item.adminid}</td>
-								<td>${item.foodid}</td>
+								<td>${item.restaurantname}</td>
+								<td>${item.foodname}</td>
 								<td>${item.price}</td>
 								<td>${item.quantity}</td>
 								<td>${item.price * item.quantity}</td>
@@ -64,8 +64,8 @@ fetch(requestFetch(uri, methodF))
 				tableId.innerHTML = `
 					${tableId.innerHTML}
 							<tr>
-								<td>${item.adminid}</td>
-								<td>${item.foodid}</td>
+								<td>${item.restaurantname}</td>
+								<td>${item.foodname}</td>
 								<td>${item.price}</td>
 								<td>${item.quantity}</td>
 								<td>${item.price * item.quantity}</td>
@@ -87,8 +87,6 @@ fetch(requestFetch(uri, methodF))
 });
 
 
-
-
 tableId.addEventListener('click', (event) => {
 	if (event.target && event.target.nodeName == "BUTTON") {
 		const id = parseInt(event.target.id.replace("order_", ""), 10);
@@ -100,19 +98,24 @@ tableId.addEventListener('click', (event) => {
 			modal.style.display = 'none';
 		});
 		modalYes.addEventListener('click', (event2) => {
-			uri = `/api/v1/cancel/${id}`;
-			methodF = 'PUT';
-			bodyF = {};
+			fetchUrl = `/api/v1/cancel/${id}`;
+			fetchMethod = 'PUT';
+			const fetchBody = {};
 			
-			fetch(requestFetch(uri, methodF, bodyF))
+			fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 			.then(resp => resp.json())
 			.then((data) => {
 				window.location.href = 'viewOrder.html';
 			})
 			.catch((error) => {
-				console.log(error);
 			});
 			modal.style.display = 'none';
 		});
 	}
+});
+
+const logout = document.getElementById('logout');
+logout.addEventListener('click', () => {
+	localStorage.removeItem('fastFoodToken');
+	window.location.href = 'index.html'
 });
