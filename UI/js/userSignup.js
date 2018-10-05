@@ -2,9 +2,9 @@ const signupForm = document.forms['signupForm'];
 
 signupForm.addEventListener('submit', (event) => {
 	event.preventDefault();
-	const uri = '/api/v1/auth/signup';
-  const methodF = 'POST';
-  const bodyF = {
+	const fetchUrl = '/api/v1/auth/signup';
+  const fetchMethod = 'POST';
+  const fetchBody = {
     fullName: signupForm.fullName.value,
 		phoneNumber: signupForm.phoneNumber.value,
 		deliveryAddress: signupForm.address.value,
@@ -12,20 +12,17 @@ signupForm.addEventListener('submit', (event) => {
 		password: signupForm.password.value,
 		confirmPassword: signupForm.cPassword.value
   };
-	fetch(requestFetch(uri, methodF, bodyF))
+	fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 	.then(resp => resp.json())
 	.then((data) => {
-		console.log(data);
 		if(data.status === 'success') {
 			window.location.href = 'viewFood.html';
 			localStorage.setItem('fastFoodToken', data.token);
-			localStorage.setItem('userName', data.data.fullName);
 		} else {
 			document.querySelector('#errorMessage').innerHTML = data.message;
 		}
 	})
 	.catch((error) => {
-		console.log(error);
 		document.querySelector('#errorMessage').innerHTML = `
 			Something is not right. Try checking your connection.`;
 	});
