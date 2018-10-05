@@ -1,16 +1,11 @@
-const signupForm = document.forms['signupForm'];
-
-signupForm.addEventListener('submit', (event) => {
+const signinForm = document.forms['signinForm'];
+signinForm.addEventListener('submit', (event) => {
 	event.preventDefault();
-	const fetchUrl = '/api/v1/auth/signup';
+	const fetchUrl = '/api/v1/auth/login';
   const fetchMethod = 'POST';
   const fetchBody = {
-    fullName: signupForm.fullName.value,
-		phoneNumber: signupForm.phoneNumber.value,
-		deliveryAddress: signupForm.address.value,
-		email: signupForm.email.value,
-		password: signupForm.password.value,
-		confirmPassword: signupForm.cPassword.value
+		email: signinForm.email.value,
+		password: signinForm.password.value
   };
 	fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 	.then(resp => resp.json())
@@ -26,4 +21,5 @@ signupForm.addEventListener('submit', (event) => {
 		document.querySelector('#errorMessage').innerHTML = `
 			Something is not right. Try checking your connection.`;
 	});
+
 });
