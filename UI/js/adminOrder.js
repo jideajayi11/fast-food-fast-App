@@ -2,8 +2,8 @@ const adminId = jwt_decode(localStorage.getItem('fastFoodToken')).adminId;
 let username;
 if(adminId)
 	username = jwt_decode(localStorage.getItem('fastFoodToken')).fullName;
-let uri = `/api/v1/orders`;
-let methodF = 'GET';
+let fetchUrl = `/api/v1/orders`;
+let fetchMethod = 'GET';
 
 
 const pageBody = document.getElementById('pageBody');
@@ -20,7 +20,7 @@ grandChild.innerHTML = `Manage Orders:`;
 child.appendChild(grandChild);
 grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'top-text');
-grandChild.innerHTML = `<span class="text-theme">Admin: </span> 
+grandChild.innerHTML = `<span class="text-theme"></span> 
 													<strong>${username}</strong>`;
 child.appendChild(grandChild);
 pageBody.appendChild(child);
@@ -34,10 +34,9 @@ child.innerHTML = `<table class="mt-20" id="tableId">
 pageBody.appendChild(child);
 
 
-
 const tableId = document.getElementById('tableId');
 	
-fetch(requestFetch(uri, methodF))
+fetch(requestFetch(fetchUrl, fetchMethod))
 .then(resp => resp.json())
 .then((data) => {
 	if(data.orders[0]) {
@@ -80,8 +79,6 @@ fetch(requestFetch(uri, methodF))
 });
 
 
-
-
 tableId.addEventListener('click', (event) => {
 	if (event.target && event.target.nodeName == "BUTTON") {
 		const id = parseInt(event.target.id.replace("order_", ""), 10);
@@ -97,23 +94,28 @@ tableId.addEventListener('click', (event) => {
 		modalYes.addEventListener('click', (event2) => {
 			const value = getStatus.value;
 			if(value !== '') {
-				uri = `/api/v1/orders/${id}`;
-				methodF = 'PUT';
-				bodyF = {
+				fetchUrl = `/api/v1/orders/${id}`;
+				fetchMethod = 'PUT';
+				const fetchBody = {
 					orderStatus: value
 				};
 
-				fetch(requestFetch(uri, methodF, bodyF))
+				fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 				.then(resp => resp.json())
 				.then((data) => {
 					window.location.href = 'adminOrder.html';
 				})
 				.catch((error) => {
-					console.log(error);
 				});
 				getStatus.value = '';
 				modal.style.display = 'none';
 			}
 		});
 	}
+});
+
+const logout = document.getElementById('logout');
+logout.addEventListener('click', () => {
+	localStorage.removeItem('fastFoodToken');
+	window.location.href = 'adminLogin.html'
 });

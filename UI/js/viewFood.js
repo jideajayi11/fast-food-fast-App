@@ -2,14 +2,14 @@ const userId = jwt_decode(localStorage.getItem('fastFoodToken')).userId;
 let username;
 if(userId)
 	username = jwt_decode(localStorage.getItem('fastFoodToken')).fullName;
-let uri = '/api/v1/admin';
-let methodF = 'GET';
+let fetchUrl = '/api/v1/admin';
+let fetchMethod = 'GET';
 const restaurantDetails = document.createElement('select');
 restaurantDetails.setAttribute('id', 'getList');
 restaurantDetails.innerHTML = `
 <option value="" selected>Select Restaurant</option>`;
 
-fetch(requestFetch(uri, methodF))
+fetch(requestFetch(fetchUrl, fetchMethod))
 .then(resp => resp.json())
 .then((data) => {
 	data.restaurant.forEach((item) => {
@@ -19,7 +19,6 @@ fetch(requestFetch(uri, methodF))
 	});
 })
 .catch((error) => {
-	console.log(error);
 });
 
 const pageBody = document.getElementById('pageBody');
@@ -53,10 +52,9 @@ pageBody.appendChild(child);
 const tableId = document.getElementById('tableId');
 const restaurant = document.getElementById('getList');
 restaurant.addEventListener('change', () => {
-	uri = `/api/v1/menu?id=${restaurant.value}`;
+	fetchUrl = `/api/v1/menu?id=${restaurant.value}`;
 	
-	
-	fetch(requestFetch(uri, methodF))
+	fetch(requestFetch(fetchUrl, fetchMethod))
 	.then(resp => resp.json())
 	.then((data) => {
 		if(data.menus[0]) {
@@ -106,22 +104,27 @@ tableId.addEventListener('click', (event) => {
 			modal.style.display = 'none';
 		});
 		modalYes.addEventListener('click', (event2) => {
-			uri = '/api/v1/orders';
-			methodF = 'POST';
-			const bodyF = {
+			fetchUrl = '/api/v1/orders';
+			fetchMethod = 'POST';
+			const fetchBody = {
 				quantity: document.getElementById(`quantity_${id}`).value,
 				foodId: id
 			};
 			
-			fetch(requestFetch(uri, methodF, bodyF))
+			fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 			.then(resp => resp.json())
 			.then((data) => {
 				
 			})
 			.catch((error) => {
-				console.log(error);
 			});
 			modal.style.display = 'none';
 		});
 	}
+});
+
+const logout = document.getElementById('logout');
+logout.addEventListener('click', () => {
+	localStorage.removeItem('fastFoodToken');
+	window.location.href = 'index.html'
 });
