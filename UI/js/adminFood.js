@@ -2,9 +2,9 @@ const adminId = jwt_decode(localStorage.getItem('fastFoodToken')).adminId;
 let username;
 if(adminId)
 	username = jwt_decode(localStorage.getItem('fastFoodToken')).fullName;
-let uri = `/api/v1/menu`;
-let methodF = 'GET';
-
+let fetchUrl = `/api/v1/menu`;
+let fetchMethod = 'GET';
+let fetchBody = {};
 
 const pageBody = document.getElementById('pageBody');
 let child = document.createElement('div');
@@ -40,7 +40,7 @@ pageBody.appendChild(child);
 
 const tableId = document.getElementById('tableId');
 	
-fetch(requestFetch(uri, methodF))
+fetch(requestFetch(fetchUrl, fetchMethod))
 .then(resp => resp.json())
 .then((data) => {
 	if(data.menus[0]) {
@@ -79,36 +79,38 @@ fetch(requestFetch(uri, methodF))
 
 tableId.addEventListener('click', (event) => {
 	if (event.target && event.target.nodeName == "BUTTON") {
-		const id = parseInt(event.target.id.replace("order_", ""), 10);
-		const modal = document.querySelector('.overlay');
-		modal.style.display = 'flex';
-		const modalYes = document.getElementById('yesBtn');
-		const modalNo = document.getElementById('noBtn');
-		const getStatus = document.getElementById('getStatus');
-		modalNo.addEventListener('click', (event1) => {
-			getStatus.value = '';
-			modal.style.display = 'none';
-		});
-		modalYes.addEventListener('click', (event2) => {
-			const value = getStatus.value;
-			if(value !== '') {
-				uri = `/api/v1/orders/${id}`;
-				methodF = 'PUT';
-				bodyF = {
-					orderStatus: value
-				};
-
-				fetch(requestFetch(uri, methodF, bodyF))
-				.then(resp => resp.json())
-				.then((data) => {
-					window.location.href = 'adminOrder.html';
-				})
-				.catch((error) => {
-				});
+		if(event.target.id.matches("order_")) {
+			const id = parseInt(event.target.id.replace("order_", ""), 10);
+			const modal = document.querySelector('.overlay');
+			modal.style.display = 'flex';
+			const modalYes = document.getElementById('yesBtn');
+			const modalNo = document.getElementById('noBtn');
+			const getStatus = document.getElementById('getStatus');
+			modalNo.addEventListener('click', (event1) => {
 				getStatus.value = '';
 				modal.style.display = 'none';
-			}
-		});
+			});
+			modalYes.addEventListener('click', (event2) => {
+				const value = getStatus.value;
+				if(value !== '') {
+					fetchUrl = `/api/v1/orders/${id}`;
+					fetchMethod = 'PUT';
+					fetchBody = {
+						orderStatus: value
+					};
+
+					fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
+					.then(resp => resp.json())
+					.then((data) => {
+						window.location.href = 'adminOrder.html';
+					})
+					.catch((error) => {
+					});
+					getStatus.value = '';
+					modal.style.display = 'none';
+				}
+			});
+		}
 	}
 });
 
@@ -127,29 +129,29 @@ addBtn.addEventListener('click', (event) => {
 	
 	addFoodForm.addEventListener('submit', (event2) => {
 		event2.preventDefault();
-		uri = 'https://api.cloudinary.com/v1_1/dagrsqjmc/image/upload';
-		methodF = 'POST';
+		fetchUrl = 'https://api.cloudinary.com/v1_1/dagrsqjmc/image/upload';
+		fetchMethod = 'POST';
 		
 		const form = new FormData();
 		const foodImg = document.getElementById('foodImg');
 		form.append('upload_preset','cugasn7d');
 		form.append('file', foodImg.files[0]);
 		
-		fetch(uri, {
-					method: methodF,
+		fetch(fetchUrl, {
+					method: fetchMethod,
 					body: form
 		})
 		.then(resp => resp.json())
 		.then((data) => {
 			const imgUrl = data.secure_url;
-			uri = '/api/v1/menu';
-			methodF = 'POST';
-			bodyF = {
+			fetchUrl = '/api/v1/menu';
+			fetchMethod = 'POST';
+			fetchBody = {
 				foodDescription: addFoodForm.food.value,
 				foodPrice: addFoodForm.price.value,
 				imageURL: imgUrl
 			};
-			fetch(requestFetch(uri, methodF, bodyF))
+			fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 			.then(resp => resp.json())
 			.then((data1) => {
 				window.location.href = 'adminFood.html';
