@@ -21,7 +21,7 @@
           <nav id="menu-items">
             <a href="adminFood.html"><div class="first">Manage Food</div></a>
             <a href="adminOrder.html"><div>Manage Orders</div></a>
-            <a href="adminLogin.html"><div class="last">Logout</div></a>
+            <div class="last" id="logout">Logout</div>
           </nav>
         </header>
         <div class="bg-dim">
@@ -41,7 +41,7 @@
               <input required class="mt-20" name="food" type="text" placeholder="Enter Food Description/Name">
               <input required class="mt-20" name="price" type="number" placeholder="Enter Food Price">
               <div class="mt-20">Upload Food Image</div>
-              <input class="" name="foodImg" type="file" >
+              <input id="foodImg" accept=".jpg, .png, .jpeg" name="foodImg" type="file" >
             
             <div class="mt-20 spread-in">
 							<button type="submit">Add</button>
@@ -60,7 +60,7 @@
               <input class="mt-20" name="food" type="text" placeholder="Enter Food Description/Name" value="Fried Rice &amp; chicken">
               <input class="mt-20" name="price" type="number" placeholder="Enter Food Price" value="800">
               <div class="mt-20">Upload Food Image</div>
-              <input class="" name="foodImg" type="file" >
+              <input class="foodImg" name="foodImg" type="file" >
             
             <div class="mt-20 spread-in"><a onclick="loginFunction();" href=""><button onclick="document.querySelector('.overlay2').style.display = 'none';">Edit</button></a>
             <button class="red" onclick="document.querySelector('.overlay2').style.display = 'none';">Close</button>

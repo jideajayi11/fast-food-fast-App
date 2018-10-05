@@ -23,7 +23,7 @@ grandChild.innerHTML = `Manage Food:`;
 child.appendChild(grandChild);
 grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'top-text');
-grandChild.innerHTML = `<span class="text-theme">Admin: </span> 
+grandChild.innerHTML = `<span class="text-theme"></span> 
 													<strong>${username}</strong>`;
 child.appendChild(grandChild);
 pageBody.appendChild(child);
@@ -104,7 +104,6 @@ tableId.addEventListener('click', (event) => {
 					window.location.href = 'adminOrder.html';
 				})
 				.catch((error) => {
-					console.log(error);
 				});
 				getStatus.value = '';
 				modal.style.display = 'none';
@@ -120,7 +119,6 @@ addBtn.addEventListener('click', (event) => {
 	modal.style.display = 'flex';
 	
 	const addFoodForm = document.forms['addFoodForm'];
-	
 	const xBtn1 = document.getElementById('xBtn1');
 	xBtn1.addEventListener('click', (event1) => {
 		addFoodForm.reset();
@@ -128,7 +126,47 @@ addBtn.addEventListener('click', (event) => {
 	});
 	
 	addFoodForm.addEventListener('submit', (event2) => {
+		event2.preventDefault();
+		uri = 'https://api.cloudinary.com/v1_1/dagrsqjmc/image/upload';
+		methodF = 'POST';
 		
+		const form = new FormData();
+		const foodImg = document.getElementById('foodImg');
+		form.append('upload_preset','cugasn7d');
+		form.append('file', foodImg.files[0]);
+		
+		fetch(uri, {
+					method: methodF,
+					body: form
+		})
+		.then(resp => resp.json())
+		.then((data) => {
+			const imgUrl = data.secure_url;
+			uri = '/api/v1/menu';
+			methodF = 'POST';
+			bodyF = {
+				foodDescription: addFoodForm.food.value,
+				foodPrice: addFoodForm.price.value,
+				imageURL: imgUrl
+			};
+			fetch(requestFetch(uri, methodF, bodyF))
+			.then(resp => resp.json())
+			.then((data1) => {
+				window.location.href = 'adminFood.html';
+			})
+			.catch((error) => {
+				addFoodForm.reset();
+				modal.style.display = 'none';
+			});
+		})
+		.catch((error) => {
+			addFoodForm.reset();
+		});
 	});
-	
+});
+
+const logout = document.getElementById('logout');
+logout.addEventListener('click', () => {
+	localStorage.removeItem('fastFoodToken');
+	window.location.href = 'adminLogin.html'
 });

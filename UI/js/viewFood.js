@@ -125,3 +125,9 @@ tableId.addEventListener('click', (event) => {
 		});
 	}
 });
+
+const logout = document.getElementById('logout');
+logout.addEventListener('click', () => {
+	localStorage.removeItem('fastFoodToken');
+	window.location.href = 'index.html'
+});

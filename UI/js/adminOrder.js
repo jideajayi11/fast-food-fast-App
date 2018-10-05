@@ -20,7 +20,7 @@ grandChild.innerHTML = `Manage Orders:`;
 child.appendChild(grandChild);
 grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'top-text');
-grandChild.innerHTML = `<span class="text-theme">Admin: </span> 
+grandChild.innerHTML = `<span class="text-theme"></span> 
 													<strong>${username}</strong>`;
 child.appendChild(grandChild);
 pageBody.appendChild(child);
@@ -109,11 +109,16 @@ tableId.addEventListener('click', (event) => {
 					window.location.href = 'adminOrder.html';
 				})
 				.catch((error) => {
-					console.log(error);
 				});
 				getStatus.value = '';
 				modal.style.display = 'none';
 			}
 		});
 	}
+});
+
+const logout = document.getElementById('logout');
+logout.addEventListener('click', () => {
+	localStorage.removeItem('fastFoodToken');
+	window.location.href = 'adminLogin.html'
 });
