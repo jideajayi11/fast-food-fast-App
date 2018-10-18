@@ -38,6 +38,7 @@ const tableId = document.getElementById('tableId');
 fetch(requestFetch(fetchUrl, fetchMethod))
 .then(resp => resp.json())
 .then((data) => {
+	hideLoading();
 	if(data.orders[0]) {
 		tableId.innerHTML = `
 								<tr>
@@ -58,7 +59,7 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 								<td>${item.price}</td>
 								<td>${item.quantity}</td>
 								<td>${item.price * item.quantity}</td>
-								<td><button id="order_${item.id}" title="click to cancel order">${item.orderstatus}</button></td>
+								<td><button class="fix" id="order_${item.id}" title="click to cancel order">${item.orderstatus}</button></td>
 							</tr>`;
 			} else {
 				tableId.innerHTML = `
@@ -79,6 +80,7 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 	}
 })
 .catch((error) => {
+	hideLoading();
 	tableId.innerHTML = `<table class="mt-20" id="tableId">
 													<tr><td class="preload">
 														Order History...
@@ -105,9 +107,11 @@ tableId.addEventListener('click', (event) => {
 			fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 			.then(resp => resp.json())
 			.then((data) => {
+				hideLoading();
 				window.location.href = 'viewOrder.html';
 			})
 			.catch((error) => {
+				hideLoading();
 			});
 			modal.style.display = 'none';
 		});

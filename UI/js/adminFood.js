@@ -43,6 +43,7 @@ const tableId = document.getElementById('tableId');
 fetch(requestFetch(fetchUrl, fetchMethod))
 .then(resp => resp.json())
 .then((data) => {
+	hideLoading();
 	if(data.menus[0]) {
 		tableId.innerHTML = `
                 <tr>
@@ -69,6 +70,7 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 	}
 })
 .catch((error) => {
+	hideLoading();
 	tableId.innerHTML = `<table class="mt-20" id="tableId">
 													<tr><td class="preload">
 														Menu List...
@@ -102,9 +104,11 @@ tableId.addEventListener('click', (event) => {
 					fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 					.then(resp => resp.json())
 					.then((data) => {
+						hideLoading();
 						window.location.href = 'adminOrder.html';
 					})
 					.catch((error) => {
+						hideLoading();
 					});
 					getStatus.value = '';
 					modal.style.display = 'none';
@@ -137,9 +141,10 @@ addBtn.addEventListener('click', (event) => {
 		form.append('upload_preset','cugasn7d');
 		form.append('file', foodImg.files[0]);
 		
+		showLoading();
 		fetch(fetchUrl, {
-					method: fetchMethod,
-					body: form
+			method: fetchMethod,
+			body: form
 		})
 		.then(resp => resp.json())
 		.then((data) => {
@@ -154,14 +159,17 @@ addBtn.addEventListener('click', (event) => {
 			fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 			.then(resp => resp.json())
 			.then((data1) => {
+				hideLoading();
 				window.location.href = 'adminFood.html';
 			})
 			.catch((error) => {
+				hideLoading();
 				addFoodForm.reset();
 				modal.style.display = 'none';
 			});
 		})
 		.catch((error) => {
+			hideLoading();
 			addFoodForm.reset();
 		});
 	});

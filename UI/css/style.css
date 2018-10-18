@@ -40,6 +40,9 @@ button.menu:hover{
 button.menu:active{
 	background-color: rgba(204, 19, 19, 0.4);
 }
+table button.fix{
+  width: 80px;
+}
 a:hover{
     text-decoration: none;
     color: #555;
@@ -255,6 +258,22 @@ select option{
   background: #fff;
   color: rgb(12, 108, 153);
   font-size: 15px;
+}
+.loading{
+  background-color: rgba(78, 69, 69, 0.377);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 3;
+}
+.loading-img{
+  width: 200px;
 }
 .overlay{
     background-color: rgba(78, 69, 69, 0.377);

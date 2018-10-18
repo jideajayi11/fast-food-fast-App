@@ -12,6 +12,7 @@ restaurantDetails.innerHTML = `
 fetch(requestFetch(fetchUrl, fetchMethod))
 .then(resp => resp.json())
 .then((data) => {
+	hideLoading();
 	data.restaurant.forEach((item) => {
 		restaurantDetails.innerHTML = `
 			${restaurantDetails.innerHTML}
@@ -19,6 +20,7 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 	});
 })
 .catch((error) => {
+	hideLoading();
 });
 
 const pageBody = document.getElementById('pageBody');
@@ -57,6 +59,7 @@ restaurant.addEventListener('change', () => {
 	fetch(requestFetch(fetchUrl, fetchMethod))
 	.then(resp => resp.json())
 	.then((data) => {
+		hideLoading();
 		if(data.menus[0]) {
 			tableId.innerHTML = `
 								<tr>
@@ -77,12 +80,16 @@ restaurant.addEventListener('change', () => {
 								<td><button id="food_${item.id}" title="click to order">Order</button></td>
 							</tr>`;
 			});
+			hideLoading();
 		} else {
 			tableId.innerHTML = `
 								<tr><td class="preload">No food found in the restaurant.</td></tr>`;
+			hideLoading();
 		}
+		hideLoading();
 	})
 	.catch((error) => {
+		hideLoading();
 		tableId.innerHTML = `<table class="mt-20" id="tableId">
 														<tr><td class="preload">
 															Select a restaurant to view food menu
@@ -114,9 +121,10 @@ tableId.addEventListener('click', (event) => {
 			fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 			.then(resp => resp.json())
 			.then((data) => {
-				
+				hideLoading();
 			})
 			.catch((error) => {
+				hideLoading();
 			});
 			modal.style.display = 'none';
 		});
