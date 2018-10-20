@@ -81,38 +81,84 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 
 tableId.addEventListener('click', (event) => {
 	if (event.target && event.target.nodeName == "BUTTON") {
-		if(event.target.id.matches("order_")) {
-			const id = parseInt(event.target.id.replace("order_", ""), 10);
-			const modal = document.querySelector('.overlay');
+		if(event.target.id.match("delete_")) {
+			const id = parseInt(event.target.id.replace("delete_", ""), 10);
+			const modal = document.querySelector('.overlay3');
 			modal.style.display = 'flex';
 			const modalYes = document.getElementById('yesBtn');
 			const modalNo = document.getElementById('noBtn');
-			const getStatus = document.getElementById('getStatus');
 			modalNo.addEventListener('click', (event1) => {
-				getStatus.value = '';
 				modal.style.display = 'none';
 			});
 			modalYes.addEventListener('click', (event2) => {
-				const value = getStatus.value;
-				if(value !== '') {
-					fetchUrl = `/api/v1/orders/${id}`;
+				fetchUrl = `/api/v1/menu/${id}`;
+				fetchMethod = 'DELETE';
+
+				fetch(requestFetch(fetchUrl, fetchMethod))
+				.then(resp => resp.json())
+				.then((data) => {
+					hideLoading();
+					window.location.href = 'adminFood.html';
+				})
+				.catch((error) => {
+					hideLoading();
+				});
+				modal.style.display = 'none';
+			});
+		} else if(event.target.id.match("edit_")) {
+			const id = parseInt(event.target.id.replace("edit_", ""), 10);
+			const modal = document.querySelector('.overlay2');
+			modal.style.display = 'flex';
+			const modalNo = document.getElementById('noBtn');
+			const editFoodForm = document.forms['editFoodForm'];
+			modalNo.addEventListener('click', (event1) => {
+				event1.preventDefault();
+				modal.style.display = 'none';
+				editFoodForm.reset();
+			});
+			editFoodForm.addEventListener('submit', (event2) => {
+				event2.preventDefault();
+				fetchUrl = 'https://api.cloudinary.com/v1_1/dagrsqjmc/image/upload';
+				fetchMethod = 'POST';
+				
+				const form = new FormData();
+				const foodImg = document.getElementsByName('foodImg')[1];
+				form.append('upload_preset','cugasn7d');
+				form.append('file', foodImg.files[0]);
+
+				showLoading();
+				fetch(fetchUrl, {
+					method: fetchMethod,
+					body: form
+				})
+				.then(resp => resp.json())
+				.then((data) => {
+					const imgUrl = data.secure_url;
+					fetchUrl = `/api/v1/menu/${id}`;
 					fetchMethod = 'PUT';
 					fetchBody = {
-						orderStatus: value
+						foodDescription: editFoodForm.food.value,
+						foodPrice: editFoodForm.price.value,
+						imageURL: imgUrl
 					};
-
 					fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 					.then(resp => resp.json())
-					.then((data) => {
+					.then((data1) => {
 						hideLoading();
-						window.location.href = 'adminOrder.html';
+						window.location.href = 'adminFood.html';
 					})
 					.catch((error) => {
 						hideLoading();
+						editFoodForm.reset();
+						modal.style.display = 'none';
 					});
-					getStatus.value = '';
-					modal.style.display = 'none';
-				}
+				})
+				.catch((error) => {
+					hideLoading();
+					editFoodForm.reset();
+				});
+				
+				
 			});
 		}
 	}

@@ -7,8 +7,7 @@ function requestFetch(fetchUrl, fetchMethod, fetchBody = {}) {
       method: fetchMethod,
       headers: new Headers({
         'Content-Type': 'application/json',
-        'x-access-token': localStorage.getItem('fastFoodToken'),
-				mode: 'cors'
+        'x-access-token': localStorage.getItem('fastFoodToken')
       }),
     });
   }
