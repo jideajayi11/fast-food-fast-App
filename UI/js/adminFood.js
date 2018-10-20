@@ -109,8 +109,8 @@ tableId.addEventListener('click', (event) => {
 			const id = parseInt(event.target.id.replace("edit_", ""), 10);
 			const modal = document.querySelector('.overlay2');
 			const editFoodForm = document.forms['editFoodForm'];
-			const modalNo = document.getElementById('noBtn');
-			modalNo.addEventListener('click', (event1) => {
+			const xBtn2 = document.getElementById('xBtn2');
+			xBtn2.addEventListener('click', (event1) => {
 				event1.preventDefault();
 				modal.style.display = 'none';
 				editFoodForm.reset();
@@ -128,7 +128,7 @@ tableId.addEventListener('click', (event) => {
 								imageurl = item.imageurl;
 								editFoodForm.food.value = item.foodname;
 								editFoodForm.price.value = item.price;
-								document.getElementById('imgTitle').innerHTML = 'Upload New Image (This would replace existing image)';
+								document.getElementById('imgTitle').innerHTML = 'Upload New Image (only if you want to replace the existing image)';
 							}
 						});
 						hideLoading();
@@ -143,7 +143,7 @@ tableId.addEventListener('click', (event) => {
 				modal.style.display = 'flex';
 				editFoodForm.addEventListener('submit', (event2) => {
 					event2.preventDefault();
-					const foodImg = document.getElementsByName('foodImg')[1];
+					const foodImg = editFoodForm.foodImg;
 					if(foodImg.files[0]) {
 						fetchUrl = 'https://api.cloudinary.com/v1_1/dagrsqjmc/image/upload';
 						fetchMethod = 'POST';
