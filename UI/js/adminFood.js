@@ -108,58 +108,91 @@ tableId.addEventListener('click', (event) => {
 		} else if(event.target.id.match("edit_")) {
 			const id = parseInt(event.target.id.replace("edit_", ""), 10);
 			const modal = document.querySelector('.overlay2');
-			modal.style.display = 'flex';
-			const modalNo = document.getElementById('noBtn');
 			const editFoodForm = document.forms['editFoodForm'];
+			const modalNo = document.getElementById('noBtn');
 			modalNo.addEventListener('click', (event1) => {
 				event1.preventDefault();
 				modal.style.display = 'none';
 				editFoodForm.reset();
 			});
-			editFoodForm.addEventListener('submit', (event2) => {
-				event2.preventDefault();
-				fetchUrl = 'https://api.cloudinary.com/v1_1/dagrsqjmc/image/upload';
-				fetchMethod = 'POST';
-				
-				const form = new FormData();
-				const foodImg = document.getElementsByName('foodImg')[1];
-				form.append('upload_preset','cugasn7d');
-				form.append('file', foodImg.files[0]);
-
-				showLoading();
-				fetch(fetchUrl, {
-					method: fetchMethod,
-					body: form
-				})
+			let imageurl;
+			try {
+				fetchUrl = `/api/v1/menu`;
+				fetchMethod = 'GET';
+				fetch(requestFetch(fetchUrl, fetchMethod))
 				.then(resp => resp.json())
 				.then((data) => {
-					const imgUrl = data.secure_url;
-					fetchUrl = `/api/v1/menu/${id}`;
-					fetchMethod = 'PUT';
-					fetchBody = {
-						foodDescription: editFoodForm.food.value,
-						foodPrice: editFoodForm.price.value,
-						imageURL: imgUrl
-					};
-					fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
-					.then(resp => resp.json())
-					.then((data1) => {
+					if(data.menus[0]) {
+						data.menus.forEach((item) => {
+							if(item.id == id) {
+								imageurl = item.imageurl;
+								editFoodForm.food.value = item.foodname;
+								editFoodForm.price.value = item.price;
+								document.getElementById('imgTitle').innerHTML = 'Upload New Image (This would replace existing image)';
+							}
+						});
 						hideLoading();
-						window.location.href = 'adminFood.html';
-					})
-					.catch((error) => {
-						hideLoading();
-						editFoodForm.reset();
-						modal.style.display = 'none';
-					});
+					} else {
+						
+					}
+				})
+				.catch((error) => {
+				});
+			}
+			finally {
+				modal.style.display = 'flex';
+				editFoodForm.addEventListener('submit', (event2) => {
+					event2.preventDefault();
+					const foodImg = document.getElementsByName('foodImg')[1];
+					if(foodImg.files[0]) {
+						fetchUrl = 'https://api.cloudinary.com/v1_1/dagrsqjmc/image/upload';
+						fetchMethod = 'POST';
+
+						const form = new FormData();
+						form.append('upload_preset','cugasn7d');
+						form.append('file', foodImg.files[0]);
+
+						showLoading();
+						fetch(fetchUrl, {
+							method: fetchMethod,
+							body: form
+						})
+						.then(resp => resp.json())
+						.then((data) => {
+							updateMenuFetch(data.secure_url);
+						})
+						.catch((error) => {
+							hideLoading();
+							editFoodForm.reset();
+						});
+					} else {
+						updateMenuFetch(imageurl);
+					}
+
+				});
+			}
+			
+			const updateMenuFetch = (imgUrl) => {
+				fetchUrl = `/api/v1/menu/${id}`;
+				fetchMethod = 'PUT';
+				fetchBody = {
+					foodDescription: editFoodForm.food.value,
+					foodPrice: editFoodForm.price.value,
+					imageURL: imgUrl
+				};
+				fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
+				.then(resp => resp.json())
+				.then((data1) => {
+					hideLoading();
+					window.location.href = 'adminFood.html';
 				})
 				.catch((error) => {
 					hideLoading();
 					editFoodForm.reset();
+					modal.style.display = 'none';
 				});
-				
-				
-			});
+			}
+			
 		}
 	}
 });
