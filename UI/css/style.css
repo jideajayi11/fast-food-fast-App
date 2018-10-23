@@ -282,7 +282,6 @@ select option{
     left: 0;
     width: 100vw;
     height: 100vh;
-    display: flex;
     flex-flow: column nowrap;
     justify-content: space-around;
     align-items: center;
@@ -296,7 +295,6 @@ select option{
     left: 0;
     width: 100vw;
     height: 100vh;
-    display: flex;
     flex-flow: column nowrap;
     justify-content: space-around;
     align-items: center;
@@ -310,7 +308,19 @@ select option{
     left: 0;
     width: 100vw;
     height: 100vh;
-    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 3;
+    display: none;
+}
+.popupAlertOverlay{
+    background-color: rgba(78, 69, 69, 0.377);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     flex-flow: column nowrap;
     justify-content: space-around;
     align-items: center;
