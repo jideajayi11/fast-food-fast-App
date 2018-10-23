@@ -26,9 +26,11 @@ button.red{
 }
 button:hover{
   background-color: #555;
+	cursor: pointer;
 }
 button:active{
   background-color: #000;
+	cursor: grabbing;
 }
 button.menu{
   margin-top: 10px;
