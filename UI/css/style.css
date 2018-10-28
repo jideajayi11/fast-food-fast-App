@@ -94,7 +94,6 @@ header {
   position: fixed;
 	top: 0;
   width: 100%;
-  padding-bottom: 4px;
   z-index: 2;
 }
 header.big {
@@ -103,6 +102,12 @@ header.big {
 	border-bottom: solid 2px rgb(204, 19, 19);
   color: #fff;
   padding-bottom: 10px;
+}
+.subHeader{
+	background: #e6e9e9;
+	padding: 5px 0 5px 0;
+	height: 15px;
+	margin-top: 4px;
 }
 footer {
   background-color: #fff;
@@ -149,6 +154,7 @@ header .container{
   font-size: 18px;
   z-index: 2;
 }
+/*
 .pageTitle{
   padding: 5px;
   background-color: rgb(204, 19, 19);
@@ -158,6 +164,15 @@ header .container{
   font-size: 22px;
   font-family: cursive;
   display: none;
+}*/
+.pageTitle{
+	font-size: 12px;
+	color: #777;
+	font-family: cursive;
+	font-weight: 600;
+}
+.pageTitle:hover{
+	color: #ccc;
 }
 .app-logo{
 	height: 35px;
@@ -195,8 +210,8 @@ header .container{
 .mt-80{
   margin-top: 80px;
 }
-.mb-70{
-  margin-bottom: 70px;
+.mb-100{
+  margin-bottom: 100px;
 }
 .text-center{
   text-align: center;

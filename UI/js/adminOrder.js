@@ -8,15 +8,11 @@ let fetchMethod = 'GET';
 
 const pageBody = document.getElementById('pageBody');
 let child = document.createElement('div');
-child.setAttribute('class', 'mb-70');
+child.setAttribute('class', 'mb-100');
 pageBody.appendChild(child);
 child = document.createElement('div');
 child.setAttribute('class', 'spread-in mt-20');
 let grandChild = document.createElement('span');
-child.appendChild(grandChild);
-grandChild = document.createElement('div');
-grandChild.setAttribute('class', 'pageTitle');
-grandChild.innerHTML = `Manage Orders:`;
 child.appendChild(grandChild);
 grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'top-text');
@@ -106,7 +102,9 @@ tableId.addEventListener('click', (event) => {
 				.then(resp => resp.json())
 				.then((data) => {
 					hideLoading();
-					window.location.href = 'adminOrder.html';
+					showPopupAlert('Order Status', 'Order status was updated successfully.', () => {
+						window.location.href = 'adminOrder.html';
+					});
 				})
 				.catch((error) => {
 					hideLoading();
@@ -116,10 +114,4 @@ tableId.addEventListener('click', (event) => {
 			}
 		});
 	}
-});
-
-const logout = document.getElementById('logout');
-logout.addEventListener('click', () => {
-	localStorage.removeItem('fastFoodToken');
-	window.location.href = 'adminLogin.html'
 });

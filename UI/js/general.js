@@ -62,7 +62,7 @@ popupAlert = () => {
 	document.querySelector('body').appendChild(popup);
 }
 popupAlert ();
-showPopupAlert = (title, message) => {
+showPopupAlert = (title, message, callbackFunc) => {
 	document.getElementById('popupAlertTitle').innerHTML = title;
 	document.getElementById('popupAlertMessage').innerHTML = message;
 	const popup = document.querySelector('.popupAlertOverlay');
@@ -70,6 +70,60 @@ showPopupAlert = (title, message) => {
 	const okBtn = document.getElementById('popupAlertOK');
 	okBtn.addEventListener('click', (event) => {
 		popup.style.display = 'none';
+		callbackFunc();
 	});
 }
-showPopupAlert('test', 'This is a popup alert test.');
+
+checkAuth = () => {
+	let address = window.location.href;
+	address = address.replace(/^.+[\/\\]/, "");
+	
+	const fetchUrl = `/api/v1/verifytoken`;
+	const fetchMethod = 'GET';
+	const logout = document.getElementById('logout');
+	
+	if(address === 'adminFood.html'
+		|| address === 'adminOrder.html') {
+		logout.addEventListener('click', () => {
+			localStorage.removeItem('fastFoodToken');
+			window.location.href = 'adminLogin.html';
+		});
+	} else if(address === 'viewFood.html'
+		|| address === 'viewOrder.html') {
+		logout.addEventListener('click', () => {
+			localStorage.removeItem('fastFoodToken');
+			window.location.href = 'index.html';
+		});
+	}
+	
+	fetch(requestFetch(fetchUrl, fetchMethod))
+	.then(resp => resp.json())
+	.then((data) => {
+		hideLoading();
+		if(address === 'adminFood.html'
+			|| address === 'adminOrder.html') {
+			if(data.message !== 'admin verified') {
+				window.location.href = 'adminLogin.html';
+			}
+		} else if(address === 'viewFood.html'
+			|| address === 'viewOrder.html') {
+			if(data.message !== 'user verified') {
+				window.location.href = 'index.html';
+			}
+		} else if(address === 'adminLogin.html'
+			|| address === 'adminRegister.html') {
+			if(data.message === 'admin verified') {
+				window.location.href = 'adminOrder.html';
+			}
+		} else if(address === 'index.html'
+			|| address === 'register.html') {
+			if(data.message === 'user verified') {
+				window.location.href = 'viewFood.html';
+			}
+		}
+	})
+	.catch((err) => {
+		hideLoading();
+	});
+}
+checkAuth();

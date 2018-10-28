@@ -8,7 +8,7 @@ let fetchBody = {};
 
 const pageBody = document.getElementById('pageBody');
 let child = document.createElement('div');
-child.setAttribute('class', 'mb-70');
+child.setAttribute('class', 'mb-100');
 pageBody.appendChild(child);
 child = document.createElement('div');
 child.setAttribute('class', 'spread-in mt-20');
@@ -16,10 +16,6 @@ let grandChild = document.createElement('button');
 grandChild.setAttribute('id', 'addBtn');
 grandChild.setAttribute('title', 'click to add food');
 grandChild.innerHTML = `Add Food`;
-child.appendChild(grandChild);
-grandChild = document.createElement('div');
-grandChild.setAttribute('class', 'pageTitle');
-grandChild.innerHTML = `Manage Food:`;
 child.appendChild(grandChild);
 grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'top-text');
@@ -94,11 +90,14 @@ tableId.addEventListener('click', (event) => {
 				fetchUrl = `/api/v1/menu/${id}`;
 				fetchMethod = 'DELETE';
 
+				modal.style.display = 'none';
 				fetch(requestFetch(fetchUrl, fetchMethod))
 				.then(resp => resp.json())
 				.then((data) => {
 					hideLoading();
-					window.location.href = 'adminFood.html';
+					showPopupAlert('Delete menu', 'Food was deleted successfully.', () => {
+						window.location.href = 'adminFood.html';
+					});
 				})
 				.catch((error) => {
 					hideLoading();
@@ -143,6 +142,7 @@ tableId.addEventListener('click', (event) => {
 				modal.style.display = 'flex';
 				editFoodForm.addEventListener('submit', (event2) => {
 					event2.preventDefault();
+					modal.style.display = 'none';
 					const foodImg = editFoodForm.foodImg;
 					if(foodImg.files[0]) {
 						fetchUrl = 'https://api.cloudinary.com/v1_1/dagrsqjmc/image/upload';
@@ -184,7 +184,9 @@ tableId.addEventListener('click', (event) => {
 				.then(resp => resp.json())
 				.then((data1) => {
 					hideLoading();
-					window.location.href = 'adminFood.html';
+					showPopupAlert('Edit Menu', 'Food was updated successfully.', () => {
+						window.location.href = 'adminFood.html';
+					});
 				})
 				.catch((error) => {
 					hideLoading();
@@ -214,6 +216,7 @@ addBtn.addEventListener('click', (event) => {
 		event2.preventDefault();
 		fetchUrl = 'https://api.cloudinary.com/v1_1/dagrsqjmc/image/upload';
 		fetchMethod = 'POST';
+		modal.style.display = 'none';
 		
 		const form = new FormData();
 		const foodImg = document.getElementById('foodImg');
@@ -239,7 +242,9 @@ addBtn.addEventListener('click', (event) => {
 			.then(resp => resp.json())
 			.then((data1) => {
 				hideLoading();
-				window.location.href = 'adminFood.html';
+				showPopupAlert('Add Menu', 'Food was added to menu successfully.', () => {
+					window.location.href = 'adminFood.html';
+				});
 			})
 			.catch((error) => {
 				hideLoading();
@@ -252,10 +257,4 @@ addBtn.addEventListener('click', (event) => {
 			addFoodForm.reset();
 		});
 	});
-});
-
-const logout = document.getElementById('logout');
-logout.addEventListener('click', () => {
-	localStorage.removeItem('fastFoodToken');
-	window.location.href = 'adminLogin.html'
 });
