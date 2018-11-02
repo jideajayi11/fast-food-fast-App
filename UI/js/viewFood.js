@@ -12,6 +12,7 @@ restaurantDetails.innerHTML = `
 fetch(requestFetch(fetchUrl, fetchMethod))
 .then(resp => resp.json())
 .then((data) => {
+	hideLoading();
 	data.restaurant.forEach((item) => {
 		restaurantDetails.innerHTML = `
 			${restaurantDetails.innerHTML}
@@ -19,20 +20,17 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 	});
 })
 .catch((error) => {
+	hideLoading();
 });
 
 const pageBody = document.getElementById('pageBody');
 let child = document.createElement('div');
-child.setAttribute('class', 'mb-70');
+child.setAttribute('class', 'mb-100');
 pageBody.appendChild(child);
 child = document.createElement('div');
 child.setAttribute('class', 'spread-in mt-20');
 child.appendChild(restaurantDetails);
-let grandChild = document.createElement('div');
-grandChild.setAttribute('class', 'pageTitle');
-grandChild.innerHTML = `Restaurants:`;
-child.appendChild(grandChild);
-grandChild = document.createElement('div');
+const grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'top-text');
 grandChild.innerHTML = `<span class="text-theme">User: </span> 
 													<strong>${username}</strong>`;
@@ -57,6 +55,7 @@ restaurant.addEventListener('change', () => {
 	fetch(requestFetch(fetchUrl, fetchMethod))
 	.then(resp => resp.json())
 	.then((data) => {
+		hideLoading();
 		if(data.menus[0]) {
 			tableId.innerHTML = `
 								<tr>
@@ -77,12 +76,16 @@ restaurant.addEventListener('change', () => {
 								<td><button id="food_${item.id}" title="click to order">Order</button></td>
 							</tr>`;
 			});
+			hideLoading();
 		} else {
 			tableId.innerHTML = `
 								<tr><td class="preload">No food found in the restaurant.</td></tr>`;
+			hideLoading();
 		}
+		hideLoading();
 	})
 	.catch((error) => {
+		hideLoading();
 		tableId.innerHTML = `<table class="mt-20" id="tableId">
 														<tr><td class="preload">
 															Select a restaurant to view food menu
@@ -106,6 +109,7 @@ tableId.addEventListener('click', (event) => {
 		modalYes.addEventListener('click', (event2) => {
 			fetchUrl = '/api/v1/orders';
 			fetchMethod = 'POST';
+			modal.style.display = 'none';
 			const fetchBody = {
 				quantity: document.getElementById(`quantity_${id}`).value,
 				foodId: id
@@ -114,17 +118,15 @@ tableId.addEventListener('click', (event) => {
 			fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 			.then(resp => resp.json())
 			.then((data) => {
-				
+				hideLoading();
+				showPopupAlert('New Order', 'Order has been placed successfully.', () => {
+					window.location.href = 'viewOrder.html';
+				});
 			})
 			.catch((error) => {
+				hideLoading();
 			});
 			modal.style.display = 'none';
 		});
 	}
-});
-
-const logout = document.getElementById('logout');
-logout.addEventListener('click', () => {
-	localStorage.removeItem('fastFoodToken');
-	window.location.href = 'index.html'
 });

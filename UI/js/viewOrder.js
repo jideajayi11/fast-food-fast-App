@@ -8,15 +8,11 @@ let fetchMethod = 'GET';
 
 const pageBody = document.getElementById('pageBody');
 let child = document.createElement('div');
-child.setAttribute('class', 'mb-70');
+child.setAttribute('class', 'mb-100');
 pageBody.appendChild(child);
 child = document.createElement('div');
 child.setAttribute('class', 'spread-in mt-20');
 let grandChild = document.createElement('span');
-child.appendChild(grandChild);
-grandChild = document.createElement('div');
-grandChild.setAttribute('class', 'pageTitle');
-grandChild.innerHTML = `My Orders:`;
 child.appendChild(grandChild);
 grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'top-text');
@@ -38,6 +34,7 @@ const tableId = document.getElementById('tableId');
 fetch(requestFetch(fetchUrl, fetchMethod))
 .then(resp => resp.json())
 .then((data) => {
+	hideLoading();
 	if(data.orders[0]) {
 		tableId.innerHTML = `
 								<tr>
@@ -46,7 +43,7 @@ fetch(requestFetch(fetchUrl, fetchMethod))
                   <th>Price</th>
                   <th>Quantity</th>
                   <th>Amount</th>
-                  <th>Status</th>
+                  <th class="text-center">Status</th>
                 </tr>`;
 		data.orders.forEach((item) => {
 			if(item.orderstatus === 'New') {
@@ -58,7 +55,7 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 								<td>${item.price}</td>
 								<td>${item.quantity}</td>
 								<td>${item.price * item.quantity}</td>
-								<td><button id="order_${item.id}" title="click to cancel order">${item.orderstatus}</button></td>
+								<td class="text-center"><button class="fix" id="order_${item.id}" title="click to cancel order">${item.orderstatus}</button></td>
 							</tr>`;
 			} else {
 				tableId.innerHTML = `
@@ -69,7 +66,7 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 								<td>${item.price}</td>
 								<td>${item.quantity}</td>
 								<td>${item.price * item.quantity}</td>
-								<td>${item.orderstatus}</td>
+								<td class="text-center">${item.orderstatus}</td>
 							</tr>`;
 			}
 		});
@@ -79,6 +76,7 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 	}
 })
 .catch((error) => {
+	hideLoading();
 	tableId.innerHTML = `<table class="mt-20" id="tableId">
 													<tr><td class="preload">
 														Order History...
@@ -101,21 +99,20 @@ tableId.addEventListener('click', (event) => {
 			fetchUrl = `/api/v1/cancel/${id}`;
 			fetchMethod = 'PUT';
 			const fetchBody = {};
+			modal.style.display = 'none';
 			
 			fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 			.then(resp => resp.json())
 			.then((data) => {
-				window.location.href = 'viewOrder.html';
+				hideLoading();
+				showPopupAlert('Cancel Order', 'Placed Order has been cancelled successfully.', () => {
+					window.location.href = 'viewOrder.html';
+				});
 			})
 			.catch((error) => {
+				hideLoading();
 			});
 			modal.style.display = 'none';
 		});
 	}
-});
-
-const logout = document.getElementById('logout');
-logout.addEventListener('click', () => {
-	localStorage.removeItem('fastFoodToken');
-	window.location.href = 'index.html'
 });

@@ -23,6 +23,13 @@
             <a href="adminOrder.html"><div>Manage Orders</div></a>
             <div class="last" id="logout">Logout</div>
           </nav>
+					<div class="subHeader">
+						<div class="container">
+							<div class="spread-in">
+								<div class="pageTitle">Manage Food:</div>
+							</div>
+						</div>
+					</div>
         </header>
         <div class="bg-dim">
           <div class="container" id="pageBody">
@@ -57,14 +64,17 @@
             <strong>Edit Food</strong>
           </div>
           <div class="popup-body">
-              <input class="mt-20" name="food" type="text" placeholder="Enter Food Description/Name" value="Fried Rice &amp; chicken">
-              <input class="mt-20" name="price" type="number" placeholder="Enter Food Price" value="800">
-              <div class="mt-20">Upload Food Image</div>
-              <input class="foodImg" name="foodImg" type="file" >
+						<form name="editFoodForm" method="post">
+              <input class="mt-20" name="food" type="text" placeholder="Enter Food Description/Name" value="">
+              <input class="mt-20" name="price" type="number" placeholder="Enter Food Price" value="">
+              <div id="imgTitle" class="mt-20">Upload Food Image</div>
+              <input class="foodImg" name="foodImg" type="file" accept=".jpg, .png, .jpeg">
             
-            <div class="mt-20 spread-in"><button onclick="document.querySelector('.overlay2').style.display = 'none';">Edit</button>
-            <button class="red" onclick="document.querySelector('.overlay2').style.display = 'none';">Close</button>
+            <div class="mt-20 spread-in">
+							<button type="submit">Edit</button>
+							<button class="red" id="xBtn2">Close</button>
             </div>
+						</form>
             </div>
           </div>
       </div>
@@ -75,8 +85,9 @@
           </div>
           <div class="popup-body">
               Are you sure you want to delete this food?
-            <div class="mt-20 spread-in"><button onclick="document.querySelector('.overlay3').style.display = 'none';">Yes</button>
-            <button class="red" onclick="document.querySelector('.overlay3').style.display = 'none';">No</button>
+            <div class="mt-20 spread-in">
+							<button id="yesBtn">Yes</button>
+							<button class="red" id="noBtn">No</button>
             </div>
             </div>
         </div>

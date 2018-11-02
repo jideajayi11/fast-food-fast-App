@@ -10,6 +10,7 @@ signinForm.addEventListener('submit', (event) => {
 	fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 	.then(resp => resp.json())
 	.then((data) => {
+		hideLoading();
 		if(data.status === 'success') {
 			window.location.href = 'viewFood.html';
 			localStorage.setItem('fastFoodToken', data.token);
@@ -18,6 +19,7 @@ signinForm.addEventListener('submit', (event) => {
 		}
 	})
 	.catch((error) => {
+		hideLoading();
 		document.querySelector('#errorMessage').innerHTML = `
 			Something is not right. Try checking your connection.`;
 	});

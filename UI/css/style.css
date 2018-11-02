@@ -26,9 +26,11 @@ button.red{
 }
 button:hover{
   background-color: #555;
+	cursor: pointer;
 }
 button:active{
   background-color: #000;
+	cursor: grabbing;
 }
 button.menu{
   margin-top: 10px;
@@ -39,6 +41,9 @@ button.menu:hover{
 }
 button.menu:active{
 	background-color: rgba(204, 19, 19, 0.4);
+}
+table button.fix{
+  width: 80px;
 }
 a:hover{
     text-decoration: none;
@@ -89,7 +94,6 @@ header {
   position: fixed;
 	top: 0;
   width: 100%;
-  padding-bottom: 4px;
   z-index: 2;
 }
 header.big {
@@ -98,6 +102,12 @@ header.big {
 	border-bottom: solid 2px rgb(204, 19, 19);
   color: #fff;
   padding-bottom: 10px;
+}
+.subHeader{
+	background: #e6e9e9;
+	padding: 5px 0 5px 0;
+	height: 15px;
+	margin-top: 4px;
 }
 footer {
   background-color: #fff;
@@ -144,6 +154,7 @@ header .container{
   font-size: 18px;
   z-index: 2;
 }
+/*
 .pageTitle{
   padding: 5px;
   background-color: rgb(204, 19, 19);
@@ -153,6 +164,15 @@ header .container{
   font-size: 22px;
   font-family: cursive;
   display: none;
+}*/
+.pageTitle{
+	font-size: 12px;
+	color: #777;
+	font-family: cursive;
+	font-weight: 600;
+}
+.pageTitle:hover{
+	color: #ccc;
 }
 .app-logo{
 	height: 35px;
@@ -190,8 +210,8 @@ header .container{
 .mt-80{
   margin-top: 80px;
 }
-.mb-70{
-  margin-bottom: 70px;
+.mb-100{
+  margin-bottom: 100px;
 }
 .text-center{
   text-align: center;
@@ -256,6 +276,22 @@ select option{
   color: rgb(12, 108, 153);
   font-size: 15px;
 }
+.loading{
+  background-color: rgba(78, 69, 69, 0.377);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 3;
+}
+.loading-img{
+  width: 200px;
+}
 .overlay{
     background-color: rgba(78, 69, 69, 0.377);
     position: fixed;
@@ -263,7 +299,6 @@ select option{
     left: 0;
     width: 100vw;
     height: 100vh;
-    display: flex;
     flex-flow: column nowrap;
     justify-content: space-around;
     align-items: center;
@@ -277,7 +312,6 @@ select option{
     left: 0;
     width: 100vw;
     height: 100vh;
-    display: flex;
     flex-flow: column nowrap;
     justify-content: space-around;
     align-items: center;
@@ -291,7 +325,19 @@ select option{
     left: 0;
     width: 100vw;
     height: 100vh;
-    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 3;
+    display: none;
+}
+.popupAlertOverlay{
+    background-color: rgba(78, 69, 69, 0.377);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     flex-flow: column nowrap;
     justify-content: space-around;
     align-items: center;

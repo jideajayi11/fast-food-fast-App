@@ -8,7 +8,7 @@ let fetchBody = {};
 
 const pageBody = document.getElementById('pageBody');
 let child = document.createElement('div');
-child.setAttribute('class', 'mb-70');
+child.setAttribute('class', 'mb-100');
 pageBody.appendChild(child);
 child = document.createElement('div');
 child.setAttribute('class', 'spread-in mt-20');
@@ -16,10 +16,6 @@ let grandChild = document.createElement('button');
 grandChild.setAttribute('id', 'addBtn');
 grandChild.setAttribute('title', 'click to add food');
 grandChild.innerHTML = `Add Food`;
-child.appendChild(grandChild);
-grandChild = document.createElement('div');
-grandChild.setAttribute('class', 'pageTitle');
-grandChild.innerHTML = `Manage Food:`;
 child.appendChild(grandChild);
 grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'top-text');
@@ -43,6 +39,7 @@ const tableId = document.getElementById('tableId');
 fetch(requestFetch(fetchUrl, fetchMethod))
 .then(resp => resp.json())
 .then((data) => {
+	hideLoading();
 	if(data.menus[0]) {
 		tableId.innerHTML = `
                 <tr>
@@ -69,6 +66,7 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 	}
 })
 .catch((error) => {
+	hideLoading();
 	tableId.innerHTML = `<table class="mt-20" id="tableId">
 													<tr><td class="preload">
 														Menu List...
@@ -79,37 +77,124 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 
 tableId.addEventListener('click', (event) => {
 	if (event.target && event.target.nodeName == "BUTTON") {
-		if(event.target.id.matches("order_")) {
-			const id = parseInt(event.target.id.replace("order_", ""), 10);
-			const modal = document.querySelector('.overlay');
+		if(event.target.id.match("delete_")) {
+			const id = parseInt(event.target.id.replace("delete_", ""), 10);
+			const modal = document.querySelector('.overlay3');
 			modal.style.display = 'flex';
 			const modalYes = document.getElementById('yesBtn');
 			const modalNo = document.getElementById('noBtn');
-			const getStatus = document.getElementById('getStatus');
 			modalNo.addEventListener('click', (event1) => {
-				getStatus.value = '';
 				modal.style.display = 'none';
 			});
 			modalYes.addEventListener('click', (event2) => {
-				const value = getStatus.value;
-				if(value !== '') {
-					fetchUrl = `/api/v1/orders/${id}`;
-					fetchMethod = 'PUT';
-					fetchBody = {
-						orderStatus: value
-					};
+				fetchUrl = `/api/v1/menu/${id}`;
+				fetchMethod = 'DELETE';
 
-					fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
-					.then(resp => resp.json())
-					.then((data) => {
-						window.location.href = 'adminOrder.html';
-					})
-					.catch((error) => {
+				modal.style.display = 'none';
+				fetch(requestFetch(fetchUrl, fetchMethod))
+				.then(resp => resp.json())
+				.then((data) => {
+					hideLoading();
+					showPopupAlert('Delete menu', 'Food was deleted successfully.', () => {
+						window.location.href = 'adminFood.html';
 					});
-					getStatus.value = '';
-					modal.style.display = 'none';
-				}
+				})
+				.catch((error) => {
+					hideLoading();
+				});
+				modal.style.display = 'none';
 			});
+		} else if(event.target.id.match("edit_")) {
+			const id = parseInt(event.target.id.replace("edit_", ""), 10);
+			const modal = document.querySelector('.overlay2');
+			const editFoodForm = document.forms['editFoodForm'];
+			const xBtn2 = document.getElementById('xBtn2');
+			xBtn2.addEventListener('click', (event1) => {
+				event1.preventDefault();
+				modal.style.display = 'none';
+				editFoodForm.reset();
+			});
+			let imageurl;
+			try {
+				fetchUrl = `/api/v1/menu`;
+				fetchMethod = 'GET';
+				fetch(requestFetch(fetchUrl, fetchMethod))
+				.then(resp => resp.json())
+				.then((data) => {
+					if(data.menus[0]) {
+						data.menus.forEach((item) => {
+							if(item.id == id) {
+								imageurl = item.imageurl;
+								editFoodForm.food.value = item.foodname;
+								editFoodForm.price.value = item.price;
+								document.getElementById('imgTitle').innerHTML = 'Upload New Image (only if you want to replace the existing image)';
+							}
+						});
+						hideLoading();
+					} else {
+						
+					}
+				})
+				.catch((error) => {
+				});
+			}
+			finally {
+				modal.style.display = 'flex';
+				editFoodForm.addEventListener('submit', (event2) => {
+					event2.preventDefault();
+					modal.style.display = 'none';
+					const foodImg = editFoodForm.foodImg;
+					if(foodImg.files[0]) {
+						fetchUrl = 'https://api.cloudinary.com/v1_1/dagrsqjmc/image/upload';
+						fetchMethod = 'POST';
+
+						const form = new FormData();
+						form.append('upload_preset','cugasn7d');
+						form.append('file', foodImg.files[0]);
+
+						showLoading();
+						fetch(fetchUrl, {
+							method: fetchMethod,
+							body: form
+						})
+						.then(resp => resp.json())
+						.then((data) => {
+							updateMenuFetch(data.secure_url);
+						})
+						.catch((error) => {
+							hideLoading();
+							editFoodForm.reset();
+						});
+					} else {
+						updateMenuFetch(imageurl);
+					}
+
+				});
+			}
+			
+			const updateMenuFetch = (imgUrl) => {
+				fetchUrl = `/api/v1/menu/${id}`;
+				fetchMethod = 'PUT';
+				fetchBody = {
+					foodDescription: editFoodForm.food.value,
+					foodPrice: editFoodForm.price.value,
+					imageURL: imgUrl
+				};
+				fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
+				.then(resp => resp.json())
+				.then((data1) => {
+					hideLoading();
+					showPopupAlert('Edit Menu', 'Food was updated successfully.', () => {
+						window.location.href = 'adminFood.html';
+					});
+				})
+				.catch((error) => {
+					hideLoading();
+					editFoodForm.reset();
+					modal.style.display = 'none';
+				});
+			}
+			
 		}
 	}
 });
@@ -131,15 +216,17 @@ addBtn.addEventListener('click', (event) => {
 		event2.preventDefault();
 		fetchUrl = 'https://api.cloudinary.com/v1_1/dagrsqjmc/image/upload';
 		fetchMethod = 'POST';
+		modal.style.display = 'none';
 		
 		const form = new FormData();
 		const foodImg = document.getElementById('foodImg');
 		form.append('upload_preset','cugasn7d');
 		form.append('file', foodImg.files[0]);
 		
+		showLoading();
 		fetch(fetchUrl, {
-					method: fetchMethod,
-					body: form
+			method: fetchMethod,
+			body: form
 		})
 		.then(resp => resp.json())
 		.then((data) => {
@@ -154,21 +241,20 @@ addBtn.addEventListener('click', (event) => {
 			fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 			.then(resp => resp.json())
 			.then((data1) => {
-				window.location.href = 'adminFood.html';
+				hideLoading();
+				showPopupAlert('Add Menu', 'Food was added to menu successfully.', () => {
+					window.location.href = 'adminFood.html';
+				});
 			})
 			.catch((error) => {
+				hideLoading();
 				addFoodForm.reset();
 				modal.style.display = 'none';
 			});
 		})
 		.catch((error) => {
+			hideLoading();
 			addFoodForm.reset();
 		});
 	});
-});
-
-const logout = document.getElementById('logout');
-logout.addEventListener('click', () => {
-	localStorage.removeItem('fastFoodToken');
-	window.location.href = 'adminLogin.html'
 });

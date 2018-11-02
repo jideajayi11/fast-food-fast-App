@@ -8,15 +8,11 @@ let fetchMethod = 'GET';
 
 const pageBody = document.getElementById('pageBody');
 let child = document.createElement('div');
-child.setAttribute('class', 'mb-70');
+child.setAttribute('class', 'mb-100');
 pageBody.appendChild(child);
 child = document.createElement('div');
 child.setAttribute('class', 'spread-in mt-20');
 let grandChild = document.createElement('span');
-child.appendChild(grandChild);
-grandChild = document.createElement('div');
-grandChild.setAttribute('class', 'pageTitle');
-grandChild.innerHTML = `Manage Orders:`;
 child.appendChild(grandChild);
 grandChild = document.createElement('div');
 grandChild.setAttribute('class', 'top-text');
@@ -39,6 +35,7 @@ const tableId = document.getElementById('tableId');
 fetch(requestFetch(fetchUrl, fetchMethod))
 .then(resp => resp.json())
 .then((data) => {
+	hideLoading();
 	if(data.orders[0]) {
 		tableId.innerHTML = `
                 <tr>
@@ -62,7 +59,7 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 							<td>${item.price}</td>
 							<td>${item.quantity}</td>
 							<td>${item.price * item.quantity}</td>
-							<td><button id="order_${item.id}" title="click to update order">${item.orderstatus}</button></td>
+							<td><button class="fix" id="order_${item.id}" title="click to update order">${item.orderstatus}</button></td>
 						</tr>`;
 		});
 	} else {
@@ -71,6 +68,7 @@ fetch(requestFetch(fetchUrl, fetchMethod))
 	}
 })
 .catch((error) => {
+	hideLoading();
 	tableId.innerHTML = `<table class="mt-20" id="tableId">
 													<tr><td class="preload">
 														Your Orders...
@@ -103,19 +101,17 @@ tableId.addEventListener('click', (event) => {
 				fetch(requestFetch(fetchUrl, fetchMethod, fetchBody))
 				.then(resp => resp.json())
 				.then((data) => {
-					window.location.href = 'adminOrder.html';
+					hideLoading();
+					showPopupAlert('Order Status', 'Order status was updated successfully.', () => {
+						window.location.href = 'adminOrder.html';
+					});
 				})
 				.catch((error) => {
+					hideLoading();
 				});
 				getStatus.value = '';
 				modal.style.display = 'none';
 			}
 		});
 	}
-});
-
-const logout = document.getElementById('logout');
-logout.addEventListener('click', () => {
-	localStorage.removeItem('fastFoodToken');
-	window.location.href = 'adminLogin.html'
 });
